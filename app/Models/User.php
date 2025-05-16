@@ -1,19 +1,36 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
+use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * Модель пользователя.
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $email
+ * @property string $password
+ * @property string $gender
+ * @property bool $is_admin
+ * @property Carbon|null $email_verified_at
+ * @property string|null $remember_token
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ */
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasApiTokens;
 
     /**
-     * The attributes that are mass assignable.
+     * Разрешённые к массовому присвоению поля.
      *
      * @var list<string>
      */
@@ -21,10 +38,12 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'gender',
+        'is_admin',
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
+     * Поля, скрытые при сериализации.
      *
      * @var list<string>
      */
@@ -34,7 +53,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * Преобразование типов для полей.
      *
      * @return array<string, string>
      */
@@ -42,6 +61,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'is_admin' => 'boolean',
             'password' => 'hashed',
         ];
     }
